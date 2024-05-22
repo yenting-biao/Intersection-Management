@@ -14,8 +14,8 @@ class GameMap:
         for i in range(ROWS):
             for j in range(COLS):
                 mid = ROAD_WIDTH // 2
-                i_mod = i % GREEN_WIDTH
-                j_mod = j % GREEN_WIDTH
+                i_mod = (i + ROAD_WIDTH) % GREEN_WIDTH
+                j_mod = (j + ROAD_WIDTH) % GREEN_WIDTH
 
                 if i_mod < ROAD_WIDTH and j_mod < ROAD_WIDTH:
                     self.game_map[i][j] = 4  # Intersection

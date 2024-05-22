@@ -1,7 +1,7 @@
 # Set up the screen dimensions
 TILE_SIZE = 10
-SCREEN_WIDTH = TILE_SIZE * 16 * 10 #1600
-SCREEN_HEIGHT = TILE_SIZE * 9 * 10  #900
+SCREEN_WIDTH = TILE_SIZE * 55
+SCREEN_HEIGHT = TILE_SIZE * 55
 
 ROWS = SCREEN_HEIGHT // TILE_SIZE
 COLS = SCREEN_WIDTH // TILE_SIZE
@@ -13,5 +13,5 @@ GREEN = (0, 128, 0)
 YELLOW = (255, 255, 255)
 RED = (255, 0, 0)
 
-GREEN_WIDTH = 20
+GREEN_WIDTH = 30  # actually this is the width of a green block and road
 ROAD_WIDTH = 5

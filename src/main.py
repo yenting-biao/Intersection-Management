@@ -1,5 +1,6 @@
 import pygame
 import sys
+import time
 import random
 from Map import GameMap
 from parameters import (
@@ -29,11 +30,17 @@ pygame.display.set_caption("Intersection Management Simulation")
 # 2 for horizontal lane lines, 3 for vertical lane lines, 4 for intersection
 gameMap = GameMap(screen)
 
-print("ROWS: ", ROWS)
-print("COLS: ", COLS)
-
 # Create the player car
-cars = [Car(1, 3, screen, gameMap.game_map) for _ in range(4)]
+i = 0
+passLaneLine = False
+while i < ROWS - 1:
+    if gameMap.game_map[i][0] == 0 and passLaneLine:
+        break
+    if gameMap.game_map[i][0] == 2 or gameMap.game_map[i][0] == 3:
+        passLaneLine = True
+    i += 1
+
+cars = [Car(i, 0, screen, gameMap.game_map) for _ in range(1)]
 
 # Main game loop
 while True:
@@ -62,12 +69,13 @@ while True:
                     cars[0].move(1, 0)
                 print(gameMap.game_map[cars[0].y][cars[0].x])
 
-        for i in range(1, len(cars)):
+        for i in range(0, len(cars)):
             dir = [[0, -1], [0, 1], [-1, 0], [1, 0]]
-            opt = random.randint(0, 3)
+            opt = 1  # random.randint(0, 3)
             cars[i].move(dir[opt][0], dir[opt][1])
         # Update the display
         pygame.display.flip()
+        time.sleep(0.1)
 
     else:
         # Event handling
