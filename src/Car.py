@@ -36,4 +36,3 @@ class Car:
         ):
             self.c += dc
             self.r += dr
-        print(self.r, self.c)

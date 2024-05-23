@@ -2,8 +2,10 @@ from parameters import ROAD_WIDTH
 
 
 class ControlCenter:
-    def __init__(self):
+    def __init__(self, center: tuple[int, int]):
         self.carList = []
+        self.center = center
+        self.width = ROAD_WIDTH
 
     def addCar(self, car):
         """
