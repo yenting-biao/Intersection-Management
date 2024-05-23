@@ -90,11 +90,9 @@ def main():
     cars = [
         Car(LEFT_START, TOP_END, screen, gameMap.game_map, RED),
         Car(RIGHT_START, LEFT_END, screen, gameMap.game_map, BLUE),
-        Car(TOP_START, BOTTOM_END, screen, gameMap.game_map, PURPLE),
-        Car(BOTTOM_START, RIGHT_END, screen, gameMap.game_map, LIGHT_GREEN),
+        # Car(TOP_START, BOTTOM_END, screen, gameMap.game_map, PURPLE),
+        # Car(BOTTOM_START, RIGHT_END, screen, gameMap.game_map, LIGHT_GREEN),
     ]
-
-    controller1 = ControlCenter((27, 27))
 
     # Main game loop
     while True:
@@ -106,6 +104,7 @@ def main():
         for car in cars:
             car.draw()
 
+        controller1 = ControlCenter((27, 27))
         for i in range(len(cars)):
             # print(cars[i].r, cars[i].c)
             dc = controller1.center[1] - cars[i].c
@@ -121,6 +120,8 @@ def main():
                 trajectory = generateTrajectory(cars[i], controller1, gameMap.game_map)
                 print("trajectory", trajectory)
                 controller1.addCar({"index": i, "trajectory": trajectory})
+
+        controller1.schedule()
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
