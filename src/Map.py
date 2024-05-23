@@ -1,4 +1,4 @@
-from parameters import ROWS, COLS, GREEN_WIDTH, ROAD_WIDTH, GREEN, TILE_SIZE, YELLOW
+from parameters import ROWS, COLS, GREEN_WIDTH, ROAD_WIDTH, GREEN, TILE_SIZE, WHITE
 import pygame
 
 # 0 for roads, 1 for non-accessible areas
@@ -47,7 +47,7 @@ class GameMap:
                     for dash_start in range(0, TILE_SIZE, DASH_LENGTH + DASH_GAP):
                         pygame.draw.rect(
                             self.screen,
-                            YELLOW,
+                            WHITE,
                             (
                                 x * TILE_SIZE + dash_start,
                                 y * TILE_SIZE + DASH_Y_OFFSET,
@@ -63,7 +63,7 @@ class GameMap:
                     for dash_start in range(0, TILE_SIZE, DASH_LENGTH + DASH_GAP):
                         pygame.draw.rect(
                             self.screen,
-                            YELLOW,
+                            WHITE,
                             (
                                 x * TILE_SIZE + DASH_X_OFFSET,
                                 y * TILE_SIZE + dash_start,

@@ -10,8 +10,11 @@ COLS = SCREEN_WIDTH // TILE_SIZE
 BLACK = (0, 0, 0)
 GRAY = (128, 128, 128)
 GREEN = (0, 128, 0)
-YELLOW = (255, 255, 255)
+WHITE = (255, 255, 255)
 RED = (255, 0, 0)
+BLUE = (0, 0, 255)
+PURPLE = (128, 0, 128)
+LIGHT_GREEN = (0, 255, 0)
 
 GREEN_WIDTH = 30  # actually this is the width of a green block and road
 ROAD_WIDTH = 5
