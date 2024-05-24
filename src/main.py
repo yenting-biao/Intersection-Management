@@ -18,6 +18,7 @@ from parameters import (
     BLUE,
     PURPLE,
     LIGHT_GREEN,
+    SLEEP_TIME,
 )
 from Car import Car
 
@@ -90,12 +91,11 @@ def main():
     cars = [
         Car(LEFT_START, TOP_END, screen, gameMap.game_map, RED),
         Car(RIGHT_START, LEFT_END, screen, gameMap.game_map, BLUE),
-        # Car(TOP_START, BOTTOM_END, screen, gameMap.game_map, PURPLE),
-        # Car(BOTTOM_START, RIGHT_END, screen, gameMap.game_map, LIGHT_GREEN),
+        Car(TOP_START, BOTTOM_END, screen, gameMap.game_map, PURPLE),
+        Car(BOTTOM_START, RIGHT_END, screen, gameMap.game_map, LIGHT_GREEN),
     ]
 
-    # Main game loop
-    while True:
+    def updateScreen():
         screen.fill(GRAY)
 
         gameMap.draw()
@@ -104,17 +104,31 @@ def main():
         for car in cars:
             car.draw()
 
+    # Main game loop
+    while True:
+        updateScreen()
+
         controller1 = ControlCenter((27, 27))
         for i in range(len(cars)):
             # print(cars[i].r, cars[i].c)
             dc = controller1.center[1] - cars[i].c
             dr = controller1.center[0] - cars[i].r
-            if abs(dc) + abs(dr) > int(ROAD_WIDTH * 2):
+            if (
+                abs(dc) + abs(dr) > ROAD_WIDTH - 1
+                and not cars[i].justPassedIntersection
+            ):  # int(ROAD_WIDTH * 2):
                 # far from intersection, keep going
                 if abs(dc) < abs(dr):  # move vertically
                     cars[i].move(1 if dr > 0 else -1, 0)
                 else:  # move horizontally
                     cars[i].move(0, 1 if dc > 0 else -1)
+            elif cars[i].justPassedIntersection:
+                dr = cars[i].destination[0] - cars[i].r
+                dc = cars[i].destination[1] - cars[i].c
+                if dr == 0:
+                    cars[i].move(0, 1 if dc > 0 else -1)
+                else:
+                    cars[i].move(1 if dr > 0 else -1, 0)
             else:
                 # near intersection, need to call control center
                 trajectory = generateTrajectory(cars[i], controller1, gameMap.game_map)
@@ -124,6 +138,35 @@ def main():
         if len(controller1.carList) > 0:
             result = controller1.schedule()
             print("schedule result", result)
+
+            updateCars = set()
+            for curr in result:
+                carInd = curr[0]
+                updateCars.add(carInd)
+
+                pygame.display.flip()
+                time.sleep(SLEEP_TIME)
+
+                updateScreen()
+                # cars[carInd].draw()
+                dr = curr[1][0] - cars[carInd].r
+                dc = curr[1][1] - cars[carInd].c
+                cars[carInd].move(dr, dc)
+
+            for carInd in updateCars:
+                dr = cars[carInd].destination[0] - cars[carInd].r
+                dc = cars[carInd].destination[1] - cars[carInd].c
+                cars[carInd].justPassedIntersection = True
+                # cars[carInd].draw()
+                if dr == 0:
+                    cars[carInd].move(0, 1 if dc > 0 else -1)
+                else:
+                    cars[carInd].move(1 if dr > 0 else -1, 0)
+
+                pygame.display.flip()
+                time.sleep(SLEEP_TIME)
+
+                updateScreen()
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -148,7 +191,7 @@ def main():
         #             print(cars[0].r, cars[0].c, gameMap.game_map[cars[0].r][cars[0].c])
         # Update the display
         pygame.display.flip()
-        time.sleep(0.05)
+        time.sleep(SLEEP_TIME)
 
         # else:
         #     # Event handling

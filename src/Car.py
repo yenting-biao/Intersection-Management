@@ -19,6 +19,7 @@ class Car:
         self.screen = screen
         self.game_map = game_map
         self.color = color
+        self.justPassedIntersection = False
 
     def draw(self):
         pygame.draw.circle(
