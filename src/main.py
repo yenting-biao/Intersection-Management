@@ -118,10 +118,12 @@ def main():
             else:
                 # near intersection, need to call control center
                 trajectory = generateTrajectory(cars[i], controller1, gameMap.game_map)
-                print("trajectory", trajectory)
+                # print("trajectory", trajectory)
                 controller1.addCar({"index": i, "trajectory": trajectory})
 
-        controller1.schedule()
+        if len(controller1.carList) > 0:
+            result = controller1.schedule()
+            print("schedule result", result)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -146,7 +148,7 @@ def main():
         #             print(cars[0].r, cars[0].c, gameMap.game_map[cars[0].r][cars[0].c])
         # Update the display
         pygame.display.flip()
-        time.sleep(0.1)
+        time.sleep(0.05)
 
         # else:
         #     # Event handling
