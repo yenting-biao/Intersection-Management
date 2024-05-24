@@ -1,6 +1,7 @@
 import pygame
 import sys
 import time
+import random
 from ControlCenter import ControlCenter
 from Map import GameMap
 from parameters import (
@@ -21,6 +22,8 @@ from parameters import (
     SLEEP_TIME,
 )
 from Car import Car
+
+random.seed(0)
 
 
 def generateTrajectory(car: Car, controller: ControlCenter, game_map: list[list[int]]):
@@ -89,10 +92,10 @@ def main():
     BOTTOM_COLOR = LIGHT_GREEN
 
     cars = [
-        Car(LEFT_START, TOP_END, screen, gameMap.game_map, RED),
-        Car(RIGHT_START, LEFT_END, screen, gameMap.game_map, BLUE),
-        Car(TOP_START, BOTTOM_END, screen, gameMap.game_map, PURPLE),
-        Car(BOTTOM_START, RIGHT_END, screen, gameMap.game_map, LIGHT_GREEN),
+        Car(LEFT_START, TOP_END, screen, gameMap.game_map, LEFT_COLOR),
+        Car(RIGHT_START, LEFT_END, screen, gameMap.game_map, RIGHT_COLOR),
+        Car(TOP_START, BOTTOM_END, screen, gameMap.game_map, TOP_COLOR),
+        Car(BOTTOM_START, RIGHT_END, screen, gameMap.game_map, BOTTOM_COLOR),
     ]
 
     def updateScreen():
@@ -110,7 +113,6 @@ def main():
 
         controller1 = ControlCenter((27, 27))
         for i in range(len(cars)):
-            # print(cars[i].r, cars[i].c)
             dc = controller1.center[1] - cars[i].c
             dr = controller1.center[0] - cars[i].r
             if (
@@ -125,7 +127,9 @@ def main():
             elif cars[i].justPassedIntersection:
                 dr = cars[i].destination[0] - cars[i].r
                 dc = cars[i].destination[1] - cars[i].c
-                if dr == 0:
+                if dr == 0 and dc == 0:
+                    continue
+                elif dr == 0:
                     cars[i].move(0, 1 if dc > 0 else -1)
                 else:
                     cars[i].move(1 if dr > 0 else -1, 0)
@@ -168,50 +172,45 @@ def main():
 
                 updateScreen()
 
+        cars = [car for car in cars if not (car.r, car.c) == car.destination]
+
+        if random.random() < 0.3:
+            while True:
+                start = random.choice(
+                    [LEFT_START, TOP_START, RIGHT_START, BOTTOM_START]
+                )
+                end = random.choice([LEFT_END, TOP_END, RIGHT_END, BOTTOM_END])
+                if abs(start[0] - end[0]) + abs(start[1] - end[1]) > ROAD_WIDTH:
+                    cars.append(
+                        Car(
+                            start,
+                            end,
+                            screen,
+                            gameMap.game_map,
+                            (
+                                TOP_COLOR
+                                if start == TOP_START
+                                else (
+                                    BOTTOM_COLOR
+                                    if start == BOTTOM_START
+                                    else (
+                                        LEFT_COLOR
+                                        if start == LEFT_START
+                                        else RIGHT_COLOR
+                                    )
+                                )
+                            ),
+                        )
+                    )
+                    break
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
 
-        # if True:
-        #     # Event handling
-        #     for event in pygame.event.get():
-        #         if event.type == pygame.QUIT:
-        #             pygame.quit()
-        #             sys.exit()
-        #         elif event.type == pygame.KEYDOWN:
-        #             if event.key == pygame.K_UP:
-        #                 cars[0].move(-1, 0)
-        #             elif event.key == pygame.K_DOWN:
-        #                 cars[0].move(1, 0)
-        #             elif event.key == pygame.K_LEFT:
-        #                 cars[0].move(0, -1)
-        #             elif event.key == pygame.K_RIGHT:
-        #                 cars[0].move(0, 1)
-        #             print(cars[0].r, cars[0].c, gameMap.game_map[cars[0].r][cars[0].c])
-        # Update the display
         pygame.display.flip()
         time.sleep(SLEEP_TIME)
-
-        # else:
-        #     # Event handling
-        #     for event in pygame.event.get():
-        #         if event.type == pygame.QUIT:
-        #             pygame.quit()
-        #             sys.exit()
-
-        #     keys = pygame.key.get_pressed()
-        #     if keys[pygame.K_UP]:
-        #         cars[0].move(0, -1)
-        #     if keys[pygame.K_DOWN]:
-        #         cars[0].move(0, 1)
-        #     if keys[pygame.K_LEFT]:
-        #         cars[0].move(-1, 0)
-        #     if keys[pygame.K_RIGHT]:
-        #         cars[0].move(1, 0)
-
-        #     # Update the display
-        #     pygame.display.flip()
 
 
 if __name__ == "__main__":
