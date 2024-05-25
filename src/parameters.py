@@ -19,4 +19,4 @@ LIGHT_GREEN = (0, 255, 0)
 GREEN_WIDTH = 30  # actually this is the width of a green block and road
 ROAD_WIDTH = 5
 
-SLEEP_TIME = 0.1
+SLEEP_TIME = 0.5
