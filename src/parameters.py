@@ -20,3 +20,19 @@ GREEN_WIDTH = 30  # actually this is the width of a green block and road
 ROAD_WIDTH = 5
 
 SLEEP_TIME = 0.1
+
+# car positions
+LEFT_START = (28, 0)
+LEFT_END = (26, 0)
+TOP_START = (0, 26)
+TOP_END = (0, 28)
+RIGHT_START = (26, 54)
+RIGHT_END = (28, 54)
+BOTTOM_START = (54, 28)
+BOTTOM_END = (54, 26)
+
+# car colors
+LEFT_COLOR = RED
+TOP_COLOR = PURPLE
+RIGHT_COLOR = BLUE
+BOTTOM_COLOR = LIGHT_GREEN

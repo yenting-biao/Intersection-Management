@@ -126,7 +126,7 @@ class ControlCenter:
                     tmpAdjList[edge[0]].append(edge[1])
             if self._isAcyclic(0, tmpAdjList):
                 self.adjList = tmpAdjList
-                print("AdjList: ", self.adjList)
+                # print("AdjList: ", self.adjList)
                 if self.isValid():
                     return True  # self.adjList
         return None
@@ -146,7 +146,7 @@ class ControlCenter:
             G = nx.DiGraph(self.adjList)
             try:
                 topologicalOrder = list(nx.topological_sort(G))
-                print("Topological Order: ", topologicalOrder)
+                # print("Topological Order: ", topologicalOrder)
             except nx.NetworkXUnfeasible:
                 continue
             for i in range(len(topologicalOrder)):
