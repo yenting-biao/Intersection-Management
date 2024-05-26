@@ -23,8 +23,6 @@ from parameters import (
 )
 from Car import Car
 
-random.seed(0)
-
 
 def generateTrajectory(car: Car, controller: ControlCenter, game_map: list[list[int]]):
     trajectory = []
@@ -92,10 +90,10 @@ def main():
     BOTTOM_COLOR = LIGHT_GREEN
 
     cars = [
-        Car(LEFT_START, TOP_END, screen, gameMap.game_map, LEFT_COLOR),
-        Car(RIGHT_START, LEFT_END, screen, gameMap.game_map, RIGHT_COLOR),
-        Car(TOP_START, BOTTOM_END, screen, gameMap.game_map, TOP_COLOR),
-        Car(BOTTOM_START, RIGHT_END, screen, gameMap.game_map, BOTTOM_COLOR),
+        Car(LEFT_START, TOP_END, screen, LEFT_COLOR),
+        Car(RIGHT_START, TOP_END, screen, RIGHT_COLOR),
+        Car(TOP_START, BOTTOM_END, screen, TOP_COLOR),
+        Car(BOTTOM_START, RIGHT_END, screen, BOTTOM_COLOR),
     ]
 
     def drawScreen():
@@ -107,10 +105,70 @@ def main():
         for car in cars:
             car.draw()
 
+    def solveIntersection(controller1: ControlCenter):
+        result = controller1.schedule()
+        print("schedule result", result)
+
+        updateCars = set(result[i][0] for i in range(len(result)))
+        for curr in result:
+            # Move the cars that are not in the schedule
+            for i in range(len(cars)):
+                if i in updateCars and not cars[i].justPassedIntersection:
+                    continue
+                dc = controller1.center[1] - cars[i].c
+                dr = controller1.center[0] - cars[i].r
+                if abs(dc) + abs(dr) > ROAD_WIDTH - 1 or cars[i].justPassedIntersection:
+                    # will not enter intersection, keep going
+                    if cars[i].justPassedIntersection:
+                        dr = cars[i].destination[0] - cars[i].r
+                        dc = cars[i].destination[1] - cars[i].c
+
+                    moveDir = (
+                        (1 if dr > 0 else -1, 0)
+                        if abs(dc) < abs(dr)
+                        else (0, 1 if dc > 0 else -1)
+                    )
+                    canGo = not any(
+                        i != j
+                        and cars[i].r + moveDir[0] == cars[j].r
+                        and cars[i].c + moveDir[1] == cars[j].c
+                        for j in range(len(cars))
+                    )
+                    if canGo:
+                        if (cars[i].r, cars[i].c) == cars[i].destination:
+                            cars[i].color = GRAY
+                        else:
+                            cars[i].move(moveDir[0], moveDir[1])
+
+            # Move the scheduled cars
+            carInd = curr[0]
+            dr = curr[1][0] - cars[carInd].r
+            dc = curr[1][1] - cars[carInd].c
+            cars[carInd].move(dr, dc)
+
+            # Check if the car can leave the intersection
+            dr = cars[carInd].destination[0] - cars[carInd].r
+            dc = cars[carInd].destination[1] - cars[carInd].c
+            tmpDir = (0, 1 if dc > 0 else -1) if dr == 0 else (1 if dr > 0 else -1, 0)
+            if (
+                gameMap.game_map[cars[carInd].r + tmpDir[0]][cars[carInd].c + tmpDir[1]]
+                != 4
+            ):
+                pygame.display.flip()
+                time.sleep(SLEEP_TIME)
+                drawScreen()
+                cars[carInd].justPassedIntersection = True
+                cars[carInd].move(tmpDir[0], tmpDir[1])
+
+            pygame.display.flip()
+            time.sleep(SLEEP_TIME)
+            drawScreen()
+
     # Main game loop
-    while True:
+    while len(cars) > 0:
         drawScreen()
 
+        # update the car positions normally
         controller1 = ControlCenter((27, 27))
         for i in range(len(cars)):
             dc = controller1.center[1] - cars[i].c
@@ -139,91 +197,9 @@ def main():
                 # print("trajectory", trajectory)
                 controller1.addCar({"index": i, "trajectory": trajectory})
 
+        # schedule the cars to pass the intersection
         if len(controller1.carList) > 0:
-            # schedule the cars
-            result = controller1.schedule()
-            print("schedule result", result)
-
-            updateCars = set(result[i][0] for i in range(len(result)))
-            for curr in result:
-                pygame.display.flip()
-                time.sleep(SLEEP_TIME)
-                drawScreen()
-
-                carInd = curr[0]
-                dr = curr[1][0] - cars[carInd].r
-                dc = curr[1][1] - cars[carInd].c
-                cars[carInd].move(dr, dc)
-
-                # TODO: bug here, need to fix
-                for i in range(len(cars)):
-                    if i in updateCars:
-                        continue
-                    dc = controller1.center[1] - cars[i].c
-                    dr = controller1.center[0] - cars[i].r
-                    if (
-                        abs(dc) + abs(dr) > ROAD_WIDTH - 1
-                        and not cars[i].justPassedIntersection
-                    ):  # int(ROAD_WIDTH * 2):
-                        # far from intersection, keep going
-                        canGo = True
-                        moveDir = (
-                            (1 if dr > 0 else -1, 0)
-                            if abs(dc) < abs(dr)
-                            else (0, 1 if dc > 0 else -1)
-                        )
-
-                        for j in range(len(cars)):
-                            if (
-                                i != j
-                                and cars[i].r + moveDir[0] == cars[j].r
-                                and cars[i].c + moveDir[1] == cars[j].c
-                            ):
-                                canGo = False
-                                break
-                        if canGo:
-                            cars[i].move(moveDir[0], moveDir[1])
-
-                    elif cars[i].justPassedIntersection:
-                        dr = cars[i].destination[0] - cars[i].r
-                        dc = cars[i].destination[1] - cars[i].c
-
-                        canGo = True
-                        moveDir = (
-                            (1 if dr > 0 else -1, 0)
-                            if abs(dc) < abs(dr)
-                            else (0, 1 if dc > 0 else -1)
-                        )
-
-                        for j in range(len(cars)):
-                            if (
-                                i != j
-                                and cars[i].r + moveDir[0] == cars[j].r
-                                and cars[i].c + moveDir[1] == cars[j].c
-                            ):
-                                canGo = False
-                                break
-                        if canGo:
-                            if dr == 0 and dc == 0:
-                                continue
-                            elif dr == 0:
-                                cars[i].move(0, 1 if dc > 0 else -1)
-                            else:
-                                cars[i].move(1 if dr > 0 else -1, 0)
-
-            for carInd in updateCars:
-                dr = cars[carInd].destination[0] - cars[carInd].r
-                dc = cars[carInd].destination[1] - cars[carInd].c
-                cars[carInd].justPassedIntersection = True
-                if dr == 0:
-                    cars[carInd].move(0, 1 if dc > 0 else -1)
-                else:
-                    cars[carInd].move(1 if dr > 0 else -1, 0)
-
-                pygame.display.flip()
-                time.sleep(SLEEP_TIME)
-
-                drawScreen()
+            solveIntersection(controller1)
 
         # Remove cars that have reached their destination
         cars = [car for car in cars if not (car.r, car.c) == car.destination]
@@ -250,7 +226,6 @@ def main():
                             start,
                             end,
                             screen,
-                            gameMap.game_map,
                             color,
                         )
                     )
@@ -266,4 +241,5 @@ def main():
 
 
 if __name__ == "__main__":
+    random.seed(0)
     main()

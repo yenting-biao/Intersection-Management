@@ -9,7 +9,6 @@ class Car:
         source: tuple[int, int],
         destination: tuple[int, int],
         screen,
-        game_map,
         color=RED,
     ):
         self.r = source[0]
@@ -17,7 +16,6 @@ class Car:
         self.source = source
         self.destination = destination
         self.screen = screen
-        self.game_map = game_map
         self.color = color
         self.justPassedIntersection = False
 
@@ -30,10 +28,6 @@ class Car:
         )
 
     def move(self, dr, dc):
-        if (
-            0 <= self.c + dc < COLS
-            and 0 <= self.r + dr < ROWS
-            and self.game_map[self.r + dr][self.c + dc] != 1
-        ):
+        if 0 <= self.c + dc < COLS and 0 <= self.r + dr < ROWS:
             self.c += dc
             self.r += dr
