@@ -127,8 +127,8 @@ class ControlCenter:
             if self._isAcyclic(0, tmpAdjList):
                 self.adjList = tmpAdjList
                 # print("AdjList: ", self.adjList)
-                if self.isValid():
-                    return True  # self.adjList
+                # if self.isValid():
+                return True  # self.adjList
         return None
 
     def isValid(self):

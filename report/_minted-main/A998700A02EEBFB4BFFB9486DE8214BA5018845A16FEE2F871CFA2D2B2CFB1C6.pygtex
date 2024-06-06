@@ -1,0 +1,39 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k}{def} \PYG{n+nf}{constructTimingConflictGraph}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{p}{):}
+\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{nodes} \PYG{o}{=} \PYG{p}{\PYGZob{}\PYGZcb{}}
+\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{edges}\PYG{p}{:} \PYG{n+nb}{list}\PYG{p}{[}\PYG{n+nb}{tuple}\PYG{p}{[}\PYG{n+nb}{int}\PYG{p}{,} \PYG{n+nb}{int}\PYG{p}{,} \PYG{n+nb}{int}\PYG{p}{]]} \PYG{o}{=} \PYG{p}{[]}  \PYG{c+c1}{\PYGZsh{} directed edges (src, dst, type)}
+\PYG{n}{conflictCars} \PYG{o}{=} \PYG{p}{\PYGZob{}\PYGZcb{}}
+\PYG{k}{for} \PYG{n}{car} \PYG{o+ow}{in} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{carList}\PYG{p}{:}
+    \PYG{k}{for} \PYG{n}{i} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{car}\PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}trajectory\PYGZdq{}}\PYG{p}{])):}
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{[(}\PYG{n}{car}\PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}index\PYGZdq{}}\PYG{p}{],} \PYG{n}{car}\PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}trajectory\PYGZdq{}}\PYG{p}{][}\PYG{n}{i}\PYG{p}{])]} \PYG{o}{=} \PYG{n+nb}{len}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{)}
+        \PYG{k}{if} \PYG{n}{car}\PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}trajectory\PYGZdq{}}\PYG{p}{][}\PYG{n}{i}\PYG{p}{]} \PYG{o+ow}{not} \PYG{o+ow}{in} \PYG{n}{conflictCars}\PYG{p}{:}
+            \PYG{n}{conflictCars}\PYG{p}{[}\PYG{n}{car}\PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}trajectory\PYGZdq{}}\PYG{p}{][}\PYG{n}{i}\PYG{p}{]]} \PYG{o}{=} \PYG{p}{[}\PYG{n}{car}\PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}index\PYGZdq{}}\PYG{p}{]]}
+        \PYG{k}{else}\PYG{p}{:}
+            \PYG{n}{conflictCars}\PYG{p}{[}\PYG{n}{car}\PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}trajectory\PYGZdq{}}\PYG{p}{][}\PYG{n}{i}\PYG{p}{]]}\PYG{o}{.}\PYG{n}{append}\PYG{p}{(}\PYG{n}{car}\PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}index\PYGZdq{}}\PYG{p}{])}
+        \PYG{k}{if} \PYG{n}{i} \PYG{o}{\PYGZgt{}} \PYG{l+m+mi}{0}\PYG{p}{:}
+            \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{edges}\PYG{o}{.}\PYG{n}{append}\PYG{p}{(}
+                \PYG{p}{(}
+                    \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{[(}\PYG{n}{car}\PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}index\PYGZdq{}}\PYG{p}{],} \PYG{n}{car}\PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}trajectory\PYGZdq{}}\PYG{p}{][}\PYG{n}{i} \PYG{o}{\PYGZhy{}} \PYG{l+m+mi}{1}\PYG{p}{])],}
+                    \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{[(}\PYG{n}{car}\PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}index\PYGZdq{}}\PYG{p}{],} \PYG{n}{car}\PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}trajectory\PYGZdq{}}\PYG{p}{][}\PYG{n}{i}\PYG{p}{])],}
+                    \PYG{l+m+mi}{1}\PYG{p}{,}  \PYG{c+c1}{\PYGZsh{} Type 1 edge}
+                \PYG{p}{)}
+            \PYG{p}{)}
+\PYG{k}{for} \PYG{n}{key}\PYG{p}{,} \PYG{n}{value} \PYG{o+ow}{in} \PYG{n}{conflictCars}\PYG{o}{.}\PYG{n}{items}\PYG{p}{():}
+    \PYG{k}{if} \PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{value}\PYG{p}{)} \PYG{o}{\PYGZgt{}} \PYG{l+m+mi}{1}\PYG{p}{:}
+        \PYG{k}{for} \PYG{n}{i} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{value}\PYG{p}{)):}
+            \PYG{k}{for} \PYG{n}{j} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{n}{i} \PYG{o}{+} \PYG{l+m+mi}{1}\PYG{p}{,} \PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{value}\PYG{p}{)):}
+                \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{edges}\PYG{o}{.}\PYG{n}{append}\PYG{p}{(}
+                    \PYG{p}{(}
+                        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{[(}\PYG{n}{value}\PYG{p}{[}\PYG{n}{i}\PYG{p}{],} \PYG{n}{key}\PYG{p}{)],}
+                        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{[(}\PYG{n}{value}\PYG{p}{[}\PYG{n}{j}\PYG{p}{],} \PYG{n}{key}\PYG{p}{)],}
+                        \PYG{l+m+mi}{3}\PYG{p}{,}  \PYG{c+c1}{\PYGZsh{} Type 3 edge}
+                    \PYG{p}{)}
+                \PYG{p}{)}
+                \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{edges}\PYG{o}{.}\PYG{n}{append}\PYG{p}{(}
+                    \PYG{p}{(}
+                        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{[(}\PYG{n}{value}\PYG{p}{[}\PYG{n}{j}\PYG{p}{],} \PYG{n}{key}\PYG{p}{)],}
+                        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{[(}\PYG{n}{value}\PYG{p}{[}\PYG{n}{i}\PYG{p}{],} \PYG{n}{key}\PYG{p}{)],}
+                        \PYG{l+m+mi}{3}\PYG{p}{,}  \PYG{c+c1}{\PYGZsh{} Type 3 edge}
+                    \PYG{p}{)}
+                \PYG{p}{)}
+\end{Verbatim}
