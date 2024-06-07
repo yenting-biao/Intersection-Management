@@ -1,0 +1,48 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k}{def} \PYG{n+nf}{removeCycle}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{p}{):}
+    \PYG{n}{type1Edges} \PYG{o}{=} \PYG{p}{[}
+        \PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{edges}\PYG{p}{[}\PYG{n}{i}\PYG{p}{][}\PYG{l+m+mi}{0}\PYG{p}{],} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{edges}\PYG{p}{[}\PYG{n}{i}\PYG{p}{][}\PYG{l+m+mi}{1}\PYG{p}{])}
+        \PYG{k}{for} \PYG{n}{i} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{n+nb}{len}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{edges}\PYG{p}{))}
+        \PYG{k}{if} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{edges}\PYG{p}{[}\PYG{n}{i}\PYG{p}{][}\PYG{l+m+mi}{2}\PYG{p}{]} \PYG{o}{==} \PYG{l+m+mi}{1}
+    \PYG{p}{]}
+    \PYG{n}{type3Edges} \PYG{o}{=} \PYG{p}{[}
+        \PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{edges}\PYG{p}{[}\PYG{n}{i}\PYG{p}{][}\PYG{l+m+mi}{0}\PYG{p}{],} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{edges}\PYG{p}{[}\PYG{n}{i}\PYG{p}{][}\PYG{l+m+mi}{1}\PYG{p}{])}
+        \PYG{k}{for} \PYG{n}{i} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{n+nb}{len}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{edges}\PYG{p}{))}
+        \PYG{k}{if} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{edges}\PYG{p}{[}\PYG{n}{i}\PYG{p}{][}\PYG{l+m+mi}{2}\PYG{p}{]} \PYG{o}{==} \PYG{l+m+mi}{3} \PYG{o+ow}{and} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{edges}\PYG{p}{[}\PYG{n}{i}\PYG{p}{][}\PYG{l+m+mi}{0}\PYG{p}{]} \PYG{o}{\PYGZlt{}} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{edges}\PYG{p}{[}\PYG{n}{i}\PYG{p}{][}\PYG{l+m+mi}{1}\PYG{p}{]}
+    \PYG{p}{]}
+    \PYG{c+c1}{\PYGZsh{} We only choose one type3 edges for each pair as we will enumerate all possible combinations}
+
+    \PYG{k}{def} \PYG{n+nf}{enumerateCombinations}\PYG{p}{(}\PYG{n}{ind}\PYG{p}{:} \PYG{n+nb}{int}\PYG{p}{)} \PYG{o}{\PYGZhy{}\PYGZgt{}} \PYG{n+nb}{list}\PYG{p}{[}\PYG{n+nb}{list}\PYG{p}{[}\PYG{n+nb}{int}\PYG{p}{]]:}
+        \PYG{k}{if} \PYG{n}{ind} \PYG{o}{==} \PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{type3Edges}\PYG{p}{):}
+            \PYG{k}{return} \PYG{p}{[[]]}
+
+        \PYG{n}{laterComb} \PYG{o}{=} \PYG{n}{enumerateCombinations}\PYG{p}{(}\PYG{n}{ind} \PYG{o}{+} \PYG{l+m+mi}{1}\PYG{p}{)}
+        \PYG{n}{result} \PYG{o}{=} \PYG{p}{[]}
+        \PYG{k}{for} \PYG{n}{comb} \PYG{o+ow}{in} \PYG{n}{laterComb}\PYG{p}{:}
+            \PYG{n}{result}\PYG{o}{.}\PYG{n}{append}\PYG{p}{([(}\PYG{n}{type3Edges}\PYG{p}{[}\PYG{n}{ind}\PYG{p}{][}\PYG{l+m+mi}{0}\PYG{p}{],} \PYG{n}{type3Edges}\PYG{p}{[}\PYG{n}{ind}\PYG{p}{][}\PYG{l+m+mi}{1}\PYG{p}{])]} \PYG{o}{+} \PYG{n}{comb}\PYG{p}{)}
+            \PYG{n}{result}\PYG{o}{.}\PYG{n}{append}\PYG{p}{([(}\PYG{n}{type3Edges}\PYG{p}{[}\PYG{n}{ind}\PYG{p}{][}\PYG{l+m+mi}{1}\PYG{p}{],} \PYG{n}{type3Edges}\PYG{p}{[}\PYG{n}{ind}\PYG{p}{][}\PYG{l+m+mi}{0}\PYG{p}{])]} \PYG{o}{+} \PYG{n}{comb}\PYG{p}{)}
+        \PYG{k}{return} \PYG{n}{result}
+
+    \PYG{n}{adjList} \PYG{o}{=} \PYG{p}{\PYGZob{}\PYGZcb{}}
+    \PYG{k}{for} \PYG{n}{edge} \PYG{o+ow}{in} \PYG{n}{type1Edges}\PYG{p}{:}
+        \PYG{k}{if} \PYG{n}{edge}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{]} \PYG{o+ow}{not} \PYG{o+ow}{in} \PYG{n}{adjList}\PYG{p}{:}
+            \PYG{n}{adjList}\PYG{p}{[}\PYG{n}{edge}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{]]} \PYG{o}{=} \PYG{p}{[}\PYG{n}{edge}\PYG{p}{[}\PYG{l+m+mi}{1}\PYG{p}{]]}
+        \PYG{k}{else}\PYG{p}{:}
+            \PYG{n}{adjList}\PYG{p}{[}\PYG{n}{edge}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{]]}\PYG{o}{.}\PYG{n}{append}\PYG{p}{(}\PYG{n}{edge}\PYG{p}{[}\PYG{l+m+mi}{1}\PYG{p}{])}
+
+    \PYG{n}{enumerateResult} \PYG{o}{=} \PYG{n}{enumerateCombinations}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{)}
+    \PYG{c+c1}{\PYGZsh{} print(\PYGZdq{}enumerateResult: \PYGZdq{}, enumerateResult)}
+    \PYG{k}{for} \PYG{n}{enum} \PYG{o+ow}{in} \PYG{n}{enumerateResult}\PYG{p}{:}
+        \PYG{n}{tmpAdjList} \PYG{o}{=} \PYG{n}{adjList}\PYG{o}{.}\PYG{n}{copy}\PYG{p}{()}
+        \PYG{k}{for} \PYG{n}{edge} \PYG{o+ow}{in} \PYG{n}{enum}\PYG{p}{:}
+            \PYG{k}{if} \PYG{n}{edge}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{]} \PYG{o+ow}{not} \PYG{o+ow}{in} \PYG{n}{tmpAdjList}\PYG{p}{:}
+                \PYG{n}{tmpAdjList}\PYG{p}{[}\PYG{n}{edge}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{]]} \PYG{o}{=} \PYG{p}{[}\PYG{n}{edge}\PYG{p}{[}\PYG{l+m+mi}{1}\PYG{p}{]]}
+            \PYG{k}{else}\PYG{p}{:}
+                \PYG{n}{tmpAdjList}\PYG{p}{[}\PYG{n}{edge}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{]]}\PYG{o}{.}\PYG{n}{append}\PYG{p}{(}\PYG{n}{edge}\PYG{p}{[}\PYG{l+m+mi}{1}\PYG{p}{])}
+        \PYG{k}{if} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{\PYGZus{}isAcyclic}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,} \PYG{n}{tmpAdjList}\PYG{p}{):}
+            \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{adjList} \PYG{o}{=} \PYG{n}{tmpAdjList}
+            \PYG{c+c1}{\PYGZsh{} print(\PYGZdq{}AdjList: \PYGZdq{}, self.adjList)}
+            \PYG{k}{if} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{isValid}\PYG{p}{():}
+                \PYG{k}{return} \PYG{k+kc}{True}  \PYG{c+c1}{\PYGZsh{} self.adjList}
+    \PYG{k}{return} \PYG{k+kc}{None}
+\end{Verbatim}
